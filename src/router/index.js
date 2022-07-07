@@ -1,25 +1,45 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Users from './modules/User'
+import Roles from './modules/Roles'
+import Menus from './modules/Menu'
+import Dicts from './modules/Dicts'
 
-const routes = [
+export const publicRoutes = [
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/login')
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/',
+    name: 'layout',
+    redirect: '/index',
+    component: () => import('../layout'),
+    children: [
+      {
+        path: '/index',
+        name: 'index',
+        meta: {
+          title: '首页',
+          icon: 'el-icon-s-home'
+        },
+        component: () => import('../views/home')
+      }
+    ]
+  },
+  {
+    path: '/404',
+    component: () => import('../views/404')
   }
 ]
 
+export const privateRoutes = [Users, Roles, Menus, Dicts]
+
 const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes: [...publicRoutes, ...privateRoutes]
 })
+
+console.log(router.getRoutes(), '123')
 
 export default router
